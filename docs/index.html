@@ -1,19 +1,248 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ScamShield Recovery</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033;line-height:1.6}header{background:#102b50;color:#fff;text-align:center;padding:32px 18px}main{max-width:760px;margin:24px auto;padding:0 16px}section{background:#fff;padding:22px;margin-bottom:18px;border-radius:12px;box-shadow:0 2px 10px #0000000c}h2{color:#102b50;margin-top:0}.notice{background:#fff3d5;padding:14px;border-left:4px solid #d69e2e;border-radius:6px}footer{text-align:center;color:#64748b;padding:20px;font-size:13px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f6fa;color:#172033}
+header{background:#102b46;color:white;padding:24px 18px;text-align:center}
+header h1{margin:0 0 8px}
+header p{margin:0;color:#d5e4f2}
+nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;background:#183c5b;padding:12px}
+nav button{background:#fff;color:#183c5b;border:0;border-radius:7px;padding:10px 14px;font-weight:bold}
+main{max-width:760px;margin:20px auto;padding:0 14px}
+.card{background:white;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px #00000010}
+h2{margin-top:0;color:#153a59}
+input,select,textarea{width:100%;padding:12px;margin:7px 0 14px;border:1px solid #cbd5e1;border-radius:7px;font-size:16px}
+textarea{min-height:110px}
+.action{background:#1769aa;color:white;border:0;border-radius:7px;padding:12px 16px;font-size:16px;font-weight:bold;width:100%}
+.action:disabled{opacity:.5}
+.notice{background:#e9f3fc;padding:12px;border-radius:8px;font-size:14px}
+.warning{background:#fff4d8;padding:12px;border-radius:8px;font-size:14px}
+.status{padding:12px;background:#eef2f7;border-radius:8px;margin:10px 0}
+.hidden{display:none}
+footer{text-align:center;padding:24px;color:#536173}
+.small{font-size:13px;color:#5a6575}
+.report{border:1px solid #e1e7ee;border-radius:8px;padding:14px;margin:12px 0}
 </style>
 </head>
 <body>
-<header><h1>🛡️ ScamShield Recovery</h1><p>Report suspected fraud. Preserve evidence. Find the right next steps.</p></header>
+
+<header>
+<h1>🛡️ ScamShield Recovery</h1>
+<p>Document suspected scams. Organize your evidence. Prepare your next steps.</p>
+</header>
+
+<nav>
+<button onclick="showSection('home')">Home</button>
+<button onclick="showSection('account')">Account</button>
+<button onclick="showSection('report')">Report Scam</button>
+<button onclick="showSection('reports')">My Reports</button>
+</nav>
+
 <main>
-<section><h2>Welcome</h2><p>ScamShield is being developed to help people organize information about suspected scams and prepare reports for the relevant financial institution or authority.</p></section>
-<section><h2>Important information</h2><div class="notice"><strong>Prototype only:</strong> This is an early demonstration. Do not submit real names, phone numbers, account details, passwords, transaction references, or other personal or financial information.</div><p>ScamShield cannot reverse payments, recover funds, freeze accounts, access bank or mobile-money systems, or guarantee recovery. Contact your bank, mobile-money provider, or appropriate authorities directly to report suspected fraud.</p></section>
-<section><h2>Development status</h2><p>Secure reporting and case-tracking features are not yet available. They will only be introduced after security, privacy, and operational checks.</p></section>
-</main><footer>ScamShield Recovery · Prototype website</footer>
+<section id="home" class="card">
+<h2>Protect. Document. Report.</h2>
+<p>ScamShield helps you record suspected fraud incidents and keep your case details organized.</p>
+<div class="notice">
+<strong>Prototype notice:</strong> ScamShield is an early-stage reporting and documentation tool. It is not a bank, law-enforcement agency, or money-recovery service.
+</div>
+<p>We cannot freeze accounts, reverse payments, or guarantee recovery. Contact your bank, mobile-money provider, and relevant authorities directly using their official contact details.</p>
+</section>
+
+<section id="account" class="card hidden">
+<h2>Your Account</h2>
+<div id="authStatus" class="status">Checking account...</div>
+
+<div id="authForms">
+<h3>Create account</h3>
+<form id="signupForm">
+<input id="signupEmail" type="email" placeholder="Email address" autocomplete="email" required>
+<input id="signupPassword" type="password" placeholder="Password (at least 6 characters)" autocomplete="new-password" minlength="6" required>
+<button class="action" type="submit">Create account</button>
+</form>
+
+<hr>
+
+<h3>Log in</h3>
+<form id="loginForm">
+<input id="loginEmail" type="email" placeholder="Email address" autocomplete="email" required>
+<input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required>
+<button class="action" type="submit">Log in</button>
+</form>
+</div>
+
+<button id="logoutBtn" class="action hidden" type="button">Log out</button>
+<p id="authMessage" class="small"></p>
+</section>
+
+<section id="report" class="card hidden">
+<h2>Submit a Scam Report</h2>
+<p class="warning">Use fake information during testing. Do not enter passwords, PINs, bank logins, identity documents, or sensitive personal details.</p>
+<form id="reportForm">
+<input id="fullName" placeholder="Name (test name)" required>
+<input id="phone" type="tel" placeholder="Phone number (test number)">
+<select id="paymentMethod" required>
+<option value="">Select payment method</option>
+<option>Mobile money</option>
+<option>Bank transfer</option>
+<option>Card payment</option>
+<option>Cryptocurrency</option>
+<option>Online platform</option>
+<option>Other</option>
+</select>
+<input id="amount" type="number" min="0" step="0.01" placeholder="Amount lost (optional)">
+<input id="transactionRef" placeholder="Transaction reference (optional)">
+<input id="recipient" placeholder="Recipient / suspected scammer (optional)">
+<textarea id="description" placeholder="Describe what happened (use test information)" required></textarea>
+<button class="action" type="submit">Submit Report</button>
+</form>
+<p id="reportMessage"></p>
+</section>
+
+<section id="reports" class="card hidden">
+<h2>My Reports & Case Tracking</h2>
+<p>Sign in to view your own reports and their recorded status.</p>
+<button id="refreshReports" class="action" type="button">Refresh My Reports</button>
+<div id="reportsList"></div>
+</section>
+
+<section class="card">
+<h3>Important safety advice</h3>
+<p>If you believe you've been scammed, contact your financial provider immediately. Do not pay anyone who promises guaranteed recovery, asks for advance fees, or requests your passwords, PINs, or verification codes.</p>
+<p class="small">Your report is a record only. The status shown here is not an official response from a bank or authority.</p>
+</section>
+</main>
+
+<footer>ScamShield Recovery · Prototype website</footer>
+
+<script>
+const SUPABASE_URL = "https://fycnczagzbhxdwgufngp.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_CNDsx8VZY_xNq8Wz6JCQlA_7Y9oU8h8";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+function showSection(id){
+  ["home","account","report","reports"].forEach(s=>{
+    document.getElementById(s).classList.toggle("hidden",s!==id);
+  });
+}
+
+function message(id,text){
+  document.getElementById(id).textContent=text;
+}
+
+function escapeHtml(value){
+  return String(value ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+async function updateAuthUI(){
+  const {data:{session}}=await db.auth.getSession();
+  const loggedIn=!!session;
+  document.getElementById("authStatus").textContent=loggedIn
+    ? "Signed in as "+session.user.email
+    : "You are not signed in.";
+  document.getElementById("authForms").classList.toggle("hidden",loggedIn);
+  document.getElementById("logoutBtn").classList.toggle("hidden",!loggedIn);
+  return session;
+}
+
+document.getElementById("signupForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  message("authMessage","Creating account...");
+  const email=document.getElementById("signupEmail").value.trim();
+  const password=document.getElementById("signupPassword").value;
+  const {data,error}=await db.auth.signUp({
+    email,password,
+    options:{emailRedirectTo:"https://wicky-32.github.io/scamshield-recovery/"}
+  });
+  if(error){message("authMessage",error.message);return;}
+  message("authMessage",data.session
+    ? "Account created and signed in."
+    : "Account created. Check your email for the confirmation link, then log in.");
+  await updateAuthUI();
+});
+
+document.getElementById("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  message("authMessage","Logging in...");
+  const email=document.getElementById("loginEmail").value.trim();
+  const password=document.getElementById("loginPassword").value;
+  const {error}=await db.auth.signInWithPassword({email,password});
+  if(error){message("authMessage",error.message);return;}
+  message("authMessage","Login successful.");
+  await updateAuthUI();
+  await loadReports();
+});
+
+document.getElementById("logoutBtn").addEventListener("click",async()=>{
+  const {error}=await db.auth.signOut();
+  message("authMessage",error?error.message:"You have logged out.");
+  await updateAuthUI();
+  document.getElementById("reportsList").textContent="";
+});
+
+document.getElementById("reportForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){
+    message("reportMessage","Please create an account or log in first.");
+    showSection("account");
+    return;
+  }
+  message("reportMessage","Submitting report...");
+  const caseRef="SSR-"+Date.now()+"-"+Math.floor(Math.random()*900+100);
+  const amountValue=document.getElementById("amount").value;
+  const report={
+    case_reference:caseRef,
+    user_id:session.user.id,
+    full_name:document.getElementById("fullName").value.trim(),
+    phone_number:document.getElementById("phone").value.trim()||null,
+    payment_method:document.getElementById("paymentMethod").value,
+    amount:amountValue?Number(amountValue):null,
+    transaction_reference:document.getElementById("transactionRef").value.trim()||null,
+    recipient:document.getElementById("recipient").value.trim()||null,
+    incident_description:document.getElementById("description").value.trim()
+  };
+  const {error}=await db.from("scam_reports").insert(report);
+  if(error){
+    message("reportMessage","Submission failed: "+error.message);
+    return;
+  }
+  message("reportMessage","Report saved. Your case reference is: "+caseRef);
+  e.target.reset();
+  await loadReports();
+});
+
+async function loadReports(){
+  const list=document.getElementById("reportsList");
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){list.textContent="Please log in to see your reports.";return;}
+  list.textContent="Loading reports...";
+  const {data,error}=await db.from("scam_reports")
+    .select("case_reference,created_at,status,payment_method,amount,incident_description")
+    .order("created_at",{ascending:false});
+  if(error){list.textContent="Could not load reports: "+error.message;return;}
+  if(!data||data.length===0){list.textContent="You have no reports yet.";return;}
+  list.innerHTML=data.map(r=>`
+    <div class="report">
+      <strong>Case:</strong> ${escapeHtml(r.case_reference)}<br>
+      <strong>Status:</strong> ${escapeHtml(r.status)}<br>
+      <strong>Submitted:</strong> ${escapeHtml(new Date(r.created_at).toLocaleString())}<br>
+      <strong>Payment method:</strong> ${escapeHtml(r.payment_method||"Not specified")}<br>
+      <strong>Amount:</strong> ${escapeHtml(r.amount??"Not specified")}<br>
+      <strong>Description:</strong> ${escapeHtml(r.incident_description||"")}
+    </div>`).join("");
+}
+
+document.getElementById("refreshReports").addEventListener("click",loadReports);
+db.auth.onAuthStateChange(()=>{updateAuthUI();});
+updateAuthUI();
+</script>
 </body>
 </html>
