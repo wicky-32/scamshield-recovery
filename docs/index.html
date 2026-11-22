@@ -16,7 +16,6 @@ nav{background:#fff;padding:12px;display:flex;gap:8px;justify-content:center;fle
 button{background:#1266a8;color:white;border:0;padding:11px 15px;border-radius:6px;cursor:pointer;font-weight:bold}
 button:hover{opacity:.9}
 button.secondary{background:#526579}
-button.danger{background:#a83232}
 main{max-width:850px;margin:24px auto;padding:0 14px}
 section{display:none;background:white;padding:22px;border-radius:10px;box-shadow:0 2px 12px #0001;margin-bottom:20px}
 section.active{display:block}
@@ -30,11 +29,12 @@ label{font-weight:bold}
 .message{padding:12px;border-radius:6px;margin:12px 0;display:none;overflow-wrap:anywhere}
 .message.success{display:block;background:#e3f5e9;color:#176333}
 .message.error{display:block;background:#fde8e8;color:#8b1e1e}
-.note-area{min-height:75px}
 .warning{background:#fff5dc;border-left:4px solid #d69e24;padding:12px;margin:14px 0;border-radius:4px}
+.small-button{padding:8px 11px;font-size:13px}
+.note-area{min-height:75px}
 footer{text-align:center;padding:24px;color:#657386;font-size:13px}
 hr{border:0;border-top:1px solid #e1e7ee;margin:18px 0}
-.small-button{padding:8px 11px;font-size:13px}
+.evidence-item{padding:9px;border-bottom:1px solid #e1e7ee;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -123,7 +123,6 @@ hr{border:0;border-top:1px solid #e1e7ee;margin:18px 0}
 
 <section id="myreports">
 <h2>My Reports</h2>
-<div id="myReportsMessage" class="message"></div>
 <div id="myReportsList">Sign in to view your reports.</div>
 <button onclick="loadMyReports()">Refresh Reports</button>
 </section>
@@ -146,6 +145,15 @@ ScamShield Recovery · Prototype website · Not a financial institution or recov
 const SUPABASE_URL = "https://fycnczagzbhxdwgufngp.supabase.co";
 const SUPABASE_KEY = "sb_publishable_CNDsx8VZY_xNq8Wz6JCQlA_7Y9oU8h8";
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const EVIDENCE_BUCKET = "scam-evidence";
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_TYPES = [
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  "image/webp"
+];
 
 let currentSession = null;
 let isAdmin = false;
@@ -220,9 +228,7 @@ async function updateAccountDisplay() {
 async function initialize() {
   const {data,error} = await db.auth.getSession();
 
-  if(error) {
-    console.error(error);
-  }
+  if(error) console.error(error);
 
   currentSession = data?.session || null;
   await updateAccountDisplay();
@@ -421,10 +427,20 @@ async function loadAdminReports() {
       <button class="small-button" onclick="saveCaseNote('${report.id}')">Save Internal Note</button>
       <h4>Notes History</h4>
       <div id="notes-${report.id}">Loading notes...</div>
+
+      <hr>
+      <h4>Evidence Documents</h4>
+      <p class="muted">Allowed formats: PDF, JPEG, PNG and WebP. Maximum size: 5 MB per file.</p>
+      <input type="file" id="evidence-${report.id}" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp">
+      <button class="small-button" onclick="uploadEvidence('${report.id}')">Upload Evidence</button>
+      <div id="evidence-list-${report.id}">Loading evidence...</div>
     </div>
   `).join("");
 
-  await Promise.all(data.map(report => loadCaseNotes(report.id)));
+  await Promise.all(data.map(async report => {
+    await loadCaseNotes(report.id);
+    await loadEvidence(report.id);
+  }));
 }
 
 async function updateStatus(reportId) {
@@ -511,6 +527,124 @@ async function saveCaseNote(reportId) {
   field.value = "";
   showMessage("adminMessage","Internal case note saved.");
   await loadCaseNotes(reportId);
+}
+
+async function uploadEvidence(reportId) {
+  if(!currentSession || !isAdmin) {
+    showMessage("adminMessage","Administrator access is required.","error");
+    return;
+  }
+
+  const input = document.getElementById("evidence-" + reportId);
+  const file = input.files[0];
+
+  if(!file) {
+    showMessage("adminMessage","Please select a file first.","error");
+    return;
+  }
+
+  if(!ALLOWED_TYPES.includes(file.type)) {
+    showMessage("adminMessage","File type not allowed. Choose a PDF, JPEG, PNG or WebP file.","error");
+    input.value = "";
+    return;
+  }
+
+  if(file.size > MAX_FILE_SIZE) {
+    showMessage("adminMessage","File is too large. The maximum size is 5 MB.","error");
+    input.value = "";
+    return;
+  }
+
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+  const storagePath = reportId + "/" + Date.now() + "-" + safeName;
+
+  showMessage("adminMessage","Uploading evidence...");
+
+  const {error:uploadError} = await db.storage
+    .from(EVIDENCE_BUCKET)
+    .upload(storagePath,file,{
+      contentType:file.type,
+      upsert:false
+    });
+
+  if(uploadError) {
+    showMessage("adminMessage","Upload failed: " + uploadError.message,"error");
+    return;
+  }
+
+  const {error:recordError} = await db
+    .from("scam_evidence")
+    .insert([{
+      report_id:reportId,
+      admin_user_id:currentSession.user.id,
+      file_name:file.name,
+      storage_path:storagePath
+    }]);
+
+  if(recordError) {
+    showMessage("adminMessage","The file uploaded, but its evidence record could not be saved: " + recordError.message,"error");
+    return;
+  }
+
+  input.value = "";
+  showMessage("adminMessage","Evidence uploaded and recorded successfully.");
+  await loadEvidence(reportId);
+}
+
+async function loadEvidence(reportId) {
+  const target = document.getElementById("evidence-list-" + reportId);
+  if(!target) return;
+
+  const {data,error} = await db
+    .from("scam_evidence")
+    .select("id,file_name,storage_path,created_at")
+    .eq("report_id",reportId)
+    .order("created_at",{ascending:false});
+
+  if(error) {
+    target.textContent = "Could not load evidence records: " + error.message;
+    return;
+  }
+
+  if(!data.length) {
+    target.textContent = "No evidence files uploaded yet.";
+    return;
+  }
+
+  target.innerHTML = "";
+
+  for(const item of data) {
+    const {data:urlData,error:urlError} = await db.storage
+      .from(EVIDENCE_BUCKET)
+      .createSignedUrl(item.storage_path,60);
+
+    const entry = document.createElement("div");
+    entry.className = "evidence-item";
+
+    const name = document.createElement("p");
+    name.textContent = item.file_name;
+    entry.appendChild(name);
+
+    const date = document.createElement("p");
+    date.className = "muted";
+    date.textContent = "Uploaded: " + item.created_at;
+    entry.appendChild(date);
+
+    if(urlError || !urlData?.signedUrl) {
+      const unavailable = document.createElement("p");
+      unavailable.textContent = "Could not create a viewing link. Refresh and try again.";
+      entry.appendChild(unavailable);
+    } else {
+      const link = document.createElement("a");
+      link.href = urlData.signedUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "View file (link expires in 60 seconds)";
+      entry.appendChild(link);
+    }
+
+    target.appendChild(entry);
+  }
 }
 
 initialize();
