@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,32 +8,33 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f3f6fa;color:#172033}
-header{background:#102b50;color:white;padding:22px 16px;text-align:center}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f6fa;color:#202b3c}
+header{background:#102a43;color:white;padding:22px 16px;text-align:center}
 header h1{margin:0 0 8px}
-header p{margin:0;color:#dce8f6}
-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:14px;background:white;box-shadow:0 2px 8px #0001}
-button{border:0;border-radius:7px;padding:11px 15px;background:#1765b1;color:white;font-weight:bold;cursor:pointer}
+header p{margin:0;color:#d9e7f5}
+nav{background:#fff;padding:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;box-shadow:0 2px 6px #0001}
+button{background:#1266a8;color:white;border:0;padding:11px 15px;border-radius:6px;cursor:pointer;font-weight:bold}
 button:hover{opacity:.9}
-button.secondary{background:#52657c}
+button.secondary{background:#526579}
 button.danger{background:#a83232}
-main{max-width:850px;margin:25px auto;padding:0 14px}
-.panel{background:white;padding:22px;border-radius:12px;margin-bottom:18px;box-shadow:0 3px 12px #0000000d}
-h2{color:#12365e;margin-top:0}
-label{display:block;font-weight:bold;margin:13px 0 6px}
-input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:7px;font-size:15px}
+main{max-width:850px;margin:24px auto;padding:0 14px}
+section{display:none;background:white;padding:22px;border-radius:10px;box-shadow:0 2px 12px #0001;margin-bottom:20px}
+section.active{display:block}
+h2{margin-top:0;color:#123b5d}
+input,textarea,select{width:100%;padding:12px;margin:7px 0 14px;border:1px solid #cbd5df;border-radius:6px;font:inherit}
 textarea{min-height:100px;resize:vertical}
-form button{margin-top:16px}
-.notice{background:#fff5dc;border-left:4px solid #d69b21;padding:13px;border-radius:5px;margin:15px 0;line-height:1.5}
-.success{color:#087443;font-weight:bold}
-.error{color:#b42318;font-weight:bold}
-.muted{color:#64748b;font-size:14px}
-.report{border:1px solid #dbe3ed;border-radius:9px;padding:15px;margin:14px 0;overflow-wrap:anywhere}
-.report h3{margin-top:0;color:#12365e}
-.hidden{display:none!important}
-footer{text-align:center;padding:25px;color:#64748b;font-size:13px}
-.status{font-weight:bold;color:#1765b1}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+label{font-weight:bold}
+.report{border:1px solid #dce4ec;border-radius:8px;padding:14px;margin:14px 0;background:#fbfdff;overflow-wrap:anywhere}
+.report p{margin:7px 0}
+.muted{color:#637386;font-size:13px}
+.message{padding:12px;border-radius:6px;margin:12px 0;display:none;overflow-wrap:anywhere}
+.message.success{display:block;background:#e3f5e9;color:#176333}
+.message.error{display:block;background:#fde8e8;color:#8b1e1e}
+.note-area{min-height:75px}
+.warning{background:#fff5dc;border-left:4px solid #d69e24;padding:12px;margin:14px 0;border-radius:4px}
+footer{text-align:center;padding:24px;color:#657386;font-size:13px}
+hr{border:0;border-top:1px solid #e1e7ee;margin:18px 0}
+.small-button{padding:8px 11px;font-size:13px}
 </style>
 </head>
 <body>
@@ -45,37 +45,29 @@ footer{text-align:center;padding:25px;color:#64748b;font-size:13px}
 </header>
 
 <nav>
-<button data-view="home">Home</button>
-<button data-view="account">Account</button>
-<button data-view="report">Report Scam</button>
-<button data-view="myreports">My Reports</button>
-<button id="adminNav" data-view="admin" class="hidden">Admin Dashboard</button>
-<button id="logoutBtn" class="secondary hidden">Log Out</button>
+<button onclick="showSection('home')">Home</button>
+<button onclick="showSection('account')">Account</button>
+<button onclick="showSection('report')">Report Scam</button>
+<button onclick="showSection('myreports')">My Reports</button>
+<button id="adminNav" style="display:none" onclick="showSection('admin')">Admin Dashboard</button>
 </nav>
 
 <main>
-<div id="message" class="panel hidden"></div>
 
-<section id="home" class="panel">
+<section id="home" class="active">
 <h2>Welcome to ScamShield Recovery</h2>
-<p>ScamShield helps people document suspected fraud, organize available evidence and prepare information for reporting to the appropriate institution or authority.</p>
-<div class="notice">
-<strong>Important:</strong> ScamShield is an independent prototype. It cannot freeze accounts, reverse M-Pesa or bank transactions, access financial institution systems, or guarantee recovery of money.
+<p>ScamShield Recovery is a prototype designed to help people document suspected scams, organize information and prepare reports for the appropriate institutions.</p>
+<div class="warning">
+<strong>Important:</strong> ScamShield cannot recover money, reverse transactions, freeze accounts or access bank or mobile-money systems. Only authorized financial institutions and relevant authorities can investigate and take those actions.
 </div>
-<h3>How it works</h3>
-<ol>
-<li>Create an account or sign in.</li>
-<li>Submit a suspected scam report using test information.</li>
-<li>View your submitted reports and case references.</li>
-<li>Authorized administrators can review reports and update their recorded status.</li>
-</ol>
-<p class="muted">Use fictional information only while this prototype is being tested.</p>
+<p>Create an account to submit a test report and view your reports.</p>
+<button onclick="showSection('account')">Get Started</button>
 </section>
 
-<section id="account" class="panel hidden">
+<section id="account">
 <h2>Account</h2>
-<div class="notice">Create an account or sign in to use the reporting features.</div>
-
+<div id="accountMessage" class="message"></div>
+<div id="signedOut">
 <h3>Create an account</h3>
 <form id="signupForm">
 <label>Email address</label>
@@ -84,421 +76,444 @@ footer{text-align:center;padding:25px;color:#64748b;font-size:13px}
 <input id="signupPassword" type="password" minlength="6" required>
 <button type="submit">Register</button>
 </form>
-
-<hr style="margin:25px 0;border:0;border-top:1px solid #ddd">
-
-<h3>Sign in</h3>
+<hr>
+<h3>Login</h3>
 <form id="loginForm">
 <label>Email address</label>
 <input id="loginEmail" type="email" required>
 <label>Password</label>
 <input id="loginPassword" type="password" required>
-<button type="submit">Sign In</button>
+<button type="submit">Login</button>
 </form>
+</div>
+<div id="signedIn" style="display:none">
+<p>You are signed in as <strong id="userEmail"></strong>.</p>
+<button class="secondary" onclick="logout()">Log Out</button>
+</div>
 </section>
 
-<section id="report" class="panel hidden">
+<section id="report">
 <h2>Submit a Scam Report</h2>
-<div id="reportAccess"></div>
-<form id="reportForm" class="hidden">
-<label>Full name (use test information)</label>
+<div class="warning">Use fictional information while testing this prototype. Do not enter real victims' personal, banking or transaction information.</div>
+<div id="reportMessage" class="message"></div>
+<form id="reportForm">
+<label>Full name (test name)</label>
 <input id="fullName" required>
-<label>Phone number (use a fictional number)</label>
+<label>Phone number (test number)</label>
 <input id="phoneNumber">
 <label>Payment method</label>
 <select id="paymentMethod">
 <option value="">Select payment method</option>
 <option>M-Pesa</option>
 <option>Bank transfer</option>
-<option>Card</option>
+<option>Card payment</option>
 <option>Other</option>
 </select>
-<label>Amount involved (test amount)</label>
+<label>Amount involved</label>
 <input id="amount" type="number" min="0" step="0.01">
-<label>Transaction reference (fictional)</label>
+<label>Transaction reference (test reference)</label>
 <input id="transactionReference">
-<label>Recipient details (fictional)</label>
+<label>Recipient details (test details)</label>
 <input id="recipient">
 <label>Describe what happened</label>
-<textarea id="description" required></textarea>
-<button type="submit">Submit Test Report</button>
+<textarea id="incidentDescription" required></textarea>
+<button type="submit">Submit Report</button>
 </form>
 </section>
 
-<section id="myreports" class="panel hidden">
+<section id="myreports">
 <h2>My Reports</h2>
-<div id="myReportsContent">Sign in to view your reports.</div>
+<div id="myReportsMessage" class="message"></div>
+<div id="myReportsList">Sign in to view your reports.</div>
+<button onclick="loadMyReports()">Refresh Reports</button>
 </section>
 
-<section id="admin" class="panel hidden">
+<section id="admin">
 <h2>Administrator Dashboard</h2>
-<div id="adminContent">Checking administrator access...</div>
+<p class="muted">Internal prototype workspace. Only authorized administrator accounts should have access.</p>
+<div id="adminMessage" class="message"></div>
+<div id="adminReportsList">Loading reports...</div>
+<button onclick="loadAdminReports()">Refresh Dashboard</button>
 </section>
+
 </main>
 
 <footer>
-ScamShield Recovery · Independent prototype · Not a financial institution
+ScamShield Recovery · Prototype website · Not a financial institution or recovery agency
 </footer>
 
 <script>
 const SUPABASE_URL = "https://fycnczagzbhxdwgufngp.supabase.co";
 const SUPABASE_KEY = "sb_publishable_CNDsx8VZY_xNq8Wz6JCQlA_7Y9oU8h8";
-
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentSession = null;
 let isAdmin = false;
 
-const views = ["home","account","report","myreports","admin"];
-
-function message(text, type="success") {
-    const box = document.getElementById("message");
-    box.textContent = text;
-    box.className = "panel " + type;
-    box.classList.remove("hidden");
-    window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function clearMessage() {
-    document.getElementById("message").classList.add("hidden");
-}
-
 function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, function(char) {
-        return {
-            "&":"&amp;",
-            "<":"&lt;",
-            ">":"&gt;",
-            '"':"&quot;",
-            "'":"&#039;"
-        }[char];
-    });
+  return String(value ?? "").replace(/[&<>"']/g, function(character) {
+    return {
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[character];
+  });
 }
 
-function showView(name) {
-    clearMessage();
-
-    views.forEach(function(view) {
-        document.getElementById(view).classList.toggle("hidden",view !== name);
-    });
-
-    if(name === "myreports") loadMyReports();
-    if(name === "admin") loadAdminReports();
-    if(name === "report") updateReportAccess();
+function showMessage(elementId, message, type="success") {
+  const element = document.getElementById(elementId);
+  element.textContent = message;
+  element.className = "message " + type;
 }
 
-document.querySelectorAll("[data-view]").forEach(function(button) {
-    button.addEventListener("click",function() {
-        showView(button.dataset.view);
-    });
-});
-
-function updateNavigation() {
-    document.getElementById("logoutBtn").classList.toggle("hidden",!currentSession);
-    document.getElementById("adminNav").classList.toggle("hidden",!isAdmin);
+function clearMessage(elementId) {
+  const element = document.getElementById(elementId);
+  element.textContent = "";
+  element.className = "message";
 }
 
-async function refreshApp() {
-    const {data,error} = await db.auth.getSession();
+function showSection(sectionId) {
+  document.querySelectorAll("main section").forEach(section => {
+    section.classList.remove("active");
+  });
+  document.getElementById(sectionId).classList.add("active");
 
-    if(error) {
-        message(error.message,"error");
-        return;
-    }
-
-    currentSession = data.session;
-    isAdmin = false;
-
-    if(currentSession) {
-        const {data:adminRecord,error:adminError} = await db
-            .from("scamshield_admins")
-            .select("user_id")
-            .eq("user_id",currentSession.user.id)
-            .maybeSingle();
-
-        if(adminError) {
-            console.error(adminError);
-        } else {
-            isAdmin = !!adminRecord;
-        }
-    }
-
-    updateNavigation();
-    updateReportAccess();
+  if(sectionId === "myreports") loadMyReports();
+  if(sectionId === "admin") loadAdminReports();
 }
 
-function updateReportAccess() {
-    const access = document.getElementById("reportAccess");
-    const form = document.getElementById("reportForm");
+async function checkAdmin() {
+  isAdmin = false;
 
-    if(currentSession) {
-        access.textContent = "Signed in as " + currentSession.user.email;
-        form.classList.remove("hidden");
-    } else {
-        access.textContent = "Please sign in before submitting a report.";
-        form.classList.add("hidden");
-    }
+  if(!currentSession) {
+    document.getElementById("adminNav").style.display = "none";
+    return;
+  }
+
+  const {data,error} = await db
+    .from("scamshield_admins")
+    .select("user_id")
+    .eq("user_id",currentSession.user.id)
+    .maybeSingle();
+
+  if(!error && data) isAdmin = true;
+
+  document.getElementById("adminNav").style.display =
+    isAdmin ? "inline-block" : "none";
+}
+
+async function updateAccountDisplay() {
+  document.getElementById("signedOut").style.display =
+    currentSession ? "none" : "block";
+
+  document.getElementById("signedIn").style.display =
+    currentSession ? "block" : "none";
+
+  document.getElementById("userEmail").textContent =
+    currentSession?.user?.email || "";
+
+  await checkAdmin();
+}
+
+async function initialize() {
+  const {data,error} = await db.auth.getSession();
+
+  if(error) {
+    console.error(error);
+  }
+
+  currentSession = data?.session || null;
+  await updateAccountDisplay();
+
+  db.auth.onAuthStateChange((_event,session) => {
+    currentSession = session;
+    setTimeout(async () => {
+      await updateAccountDisplay();
+    },0);
+  });
 }
 
 document.getElementById("signupForm").addEventListener("submit",async function(event) {
-    event.preventDefault();
-    clearMessage();
+  event.preventDefault();
+  clearMessage("accountMessage");
 
-    const email = document.getElementById("signupEmail").value.trim();
-    const password = document.getElementById("signupPassword").value;
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value;
 
-    const {data,error} = await db.auth.signUp({
-        email:email,
-        password:password,
-        options:{
-            emailRedirectTo:window.location.origin + window.location.pathname
-        }
-    });
-
-    if(error) {
-        message(error.message,"error");
-        return;
+  const {error} = await db.auth.signUp({
+    email,
+    password,
+    options:{
+      emailRedirectTo:"https://wicky-32.github.io/scamshield-recovery/"
     }
+  });
 
-    if(data.session) {
-        await refreshApp();
-        message("Registration successful. You are signed in.");
-    } else {
-        message("Registration received. Check your email for the confirmation link before signing in.");
-    }
+  if(error) {
+    showMessage("accountMessage",error.message,"error");
+  } else {
+    showMessage("accountMessage","Registration submitted. Check your email for the confirmation link.");
+    this.reset();
+  }
 });
 
 document.getElementById("loginForm").addEventListener("submit",async function(event) {
-    event.preventDefault();
-    clearMessage();
+  event.preventDefault();
+  clearMessage("accountMessage");
 
-    const email = document.getElementById("loginEmail").value.trim();
-    const password = document.getElementById("loginPassword").value;
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
 
-    const {error} = await db.auth.signInWithPassword({
-        email:email,
-        password:password
-    });
+  const {error} = await db.auth.signInWithPassword({email,password});
 
-    if(error) {
-        message(error.message,"error");
-        return;
-    }
-
-    await refreshApp();
-    message("You are signed in successfully.");
-    showView("home");
+  if(error) {
+    showMessage("accountMessage",error.message,"error");
+  } else {
+    showMessage("accountMessage","Login successful.");
+    this.reset();
+    await updateAccountDisplay();
+  }
 });
 
-document.getElementById("logoutBtn").addEventListener("click",async function() {
-    const {error} = await db.auth.signOut();
+async function logout() {
+  const {error} = await db.auth.signOut();
 
-    if(error) {
-        message(error.message,"error");
-        return;
-    }
-
+  if(error) {
+    showMessage("accountMessage",error.message,"error");
+  } else {
     currentSession = null;
     isAdmin = false;
-    updateNavigation();
-    showView("home");
-    message("You have signed out.");
-});
+    await updateAccountDisplay();
+    showMessage("accountMessage","You have logged out.");
+    showSection("home");
+  }
+}
 
 document.getElementById("reportForm").addEventListener("submit",async function(event) {
-    event.preventDefault();
-    clearMessage();
+  event.preventDefault();
+  clearMessage("reportMessage");
 
-    if(!currentSession) {
-        message("Please sign in first.","error");
-        return;
-    }
+  if(!currentSession) {
+    showMessage("reportMessage","Please log in before submitting a report.","error");
+    return;
+  }
 
-    const caseReference = "SSR-" + Date.now() + "-" +
-        Math.random().toString(36).slice(2,7).toUpperCase();
+  const amountValue = document.getElementById("amount").value;
 
-    const report = {
-        case_reference:caseReference,
-        user_id:currentSession.user.id,
-        full_name:document.getElementById("fullName").value.trim(),
-        phone_number:document.getElementById("phoneNumber").value.trim(),
-        payment_method:document.getElementById("paymentMethod").value,
-        amount:document.getElementById("amount").value || null,
-        transaction_reference:document.getElementById("transactionReference").value.trim(),
-        recipient:document.getElementById("recipient").value.trim(),
-        incident_description:document.getElementById("description").value.trim(),
-        status:"Report received"
-    };
+  const report = {
+    case_reference:"SSR-" + Date.now() + "-" + Math.floor(Math.random()*10000),
+    user_id:currentSession.user.id,
+    full_name:document.getElementById("fullName").value.trim(),
+    phone_number:document.getElementById("phoneNumber").value.trim() || null,
+    payment_method:document.getElementById("paymentMethod").value || null,
+    amount:amountValue ? Number(amountValue) : null,
+    transaction_reference:document.getElementById("transactionReference").value.trim() || null,
+    recipient:document.getElementById("recipient").value.trim() || null,
+    incident_description:document.getElementById("incidentDescription").value.trim(),
+    status:"Report received"
+  };
 
-    const {error} = await db.from("scam_reports").insert([report]);
+  const {data,error} = await db
+    .from("scam_reports")
+    .insert([report])
+    .select("case_reference")
+    .single();
 
-    if(error) {
-        message("Report could not be submitted: " + error.message,"error");
-        return;
-    }
-
-    document.getElementById("reportForm").reset();
-    message("Test report submitted successfully. Your case reference is " + caseReference);
+  if(error) {
+    showMessage("reportMessage","Submission failed: " + error.message,"error");
+  } else {
+    showMessage("reportMessage","Report submitted. Your test case reference is " + data.case_reference);
+    this.reset();
+  }
 });
 
 async function loadMyReports() {
-    const box = document.getElementById("myReportsContent");
+  const target = document.getElementById("myReportsList");
 
-    if(!currentSession) {
-        box.textContent = "Please sign in to view your reports.";
-        return;
-    }
+  if(!currentSession) {
+    target.textContent = "Please log in to view your reports.";
+    return;
+  }
 
-    box.textContent = "Loading your reports...";
+  target.textContent = "Loading your reports...";
 
-    const {data,error} = await db
-        .from("scam_reports")
-        .select("*")
-        .eq("user_id",currentSession.user.id)
-        .order("created_at",{ascending:false});
+  const {data,error} = await db
+    .from("scam_reports")
+    .select("case_reference,full_name,payment_method,amount,incident_description,status,created_at")
+    .eq("user_id",currentSession.user.id)
+    .order("created_at",{ascending:false});
 
-    if(error) {
-        box.textContent = "Could not load reports: " + error.message;
-        return;
-    }
+  if(error) {
+    target.textContent = "Could not load reports: " + error.message;
+    return;
+  }
 
-    if(!data.length) {
-        box.textContent = "You have not submitted any reports yet.";
-        return;
-    }
+  if(!data.length) {
+    target.textContent = "You have not submitted any reports yet.";
+    return;
+  }
 
-    box.innerHTML = data.map(function(report) {
-        return `
-        <div class="report">
-            <h3>${escapeHTML(report.case_reference)}</h3>
-            <p><strong>Date:</strong> ${escapeHTML(report.created_at)}</p>
-            <p><strong>Status:</strong> <span class="status">${escapeHTML(report.status)}</span></p>
-            <p><strong>Description:</strong> ${escapeHTML(report.incident_description)}</p>
-        </div>`;
-    }).join("");
+  target.innerHTML = data.map(report => `
+    <div class="report">
+      <p><strong>Case reference:</strong> ${escapeHTML(report.case_reference)}</p>
+      <p><strong>Name:</strong> ${escapeHTML(report.full_name)}</p>
+      <p><strong>Payment method:</strong> ${escapeHTML(report.payment_method || "Not provided")}</p>
+      <p><strong>Amount:</strong> ${escapeHTML(report.amount ?? "Not provided")}</p>
+      <p><strong>Description:</strong> ${escapeHTML(report.incident_description)}</p>
+      <p><strong>Status:</strong> ${escapeHTML(report.status)}</p>
+      <p class="muted">Submitted: ${escapeHTML(report.created_at)}</p>
+    </div>
+  `).join("");
 }
 
 async function loadAdminReports() {
-    const box = document.getElementById("adminContent");
+  const target = document.getElementById("adminReportsList");
 
-    if(!currentSession) {
-        box.textContent = "Please sign in with your administrator account.";
-        return;
-    }
+  if(!currentSession || !isAdmin) {
+    target.textContent = "Administrator access is required.";
+    return;
+  }
 
-    box.textContent = "Checking administrator access...";
+  target.textContent = "Loading reports...";
 
-    const {data:adminRecord,error:adminError} = await db
-        .from("scamshield_admins")
-        .select("user_id")
-        .eq("user_id",currentSession.user.id)
-        .maybeSingle();
+  const {data,error} = await db
+    .from("scam_reports")
+    .select("*")
+    .order("created_at",{ascending:false});
 
-    if(adminError || !adminRecord) {
-        box.textContent = "Access denied. This account is not registered as an administrator.";
-        return;
-    }
+  if(error) {
+    target.textContent = "Could not load reports: " + error.message;
+    return;
+  }
 
-    isAdmin = true;
-    updateNavigation();
-    box.textContent = "Loading submitted reports...";
+  if(!data.length) {
+    target.textContent = "No reports have been submitted yet.";
+    return;
+  }
 
-    const {data,error} = await db
-        .from("scam_reports")
-        .select("*")
-        .order("created_at",{ascending:false});
+  target.innerHTML = data.map(report => `
+    <div class="report">
+      <h3>${escapeHTML(report.case_reference)}</h3>
+      <p><strong>Name:</strong> ${escapeHTML(report.full_name)}</p>
+      <p><strong>Phone:</strong> ${escapeHTML(report.phone_number || "Not provided")}</p>
+      <p><strong>Payment method:</strong> ${escapeHTML(report.payment_method || "Not provided")}</p>
+      <p><strong>Amount:</strong> ${escapeHTML(report.amount ?? "Not provided")}</p>
+      <p><strong>Transaction reference:</strong> ${escapeHTML(report.transaction_reference || "Not provided")}</p>
+      <p><strong>Recipient:</strong> ${escapeHTML(report.recipient || "Not provided")}</p>
+      <p><strong>Description:</strong> ${escapeHTML(report.incident_description)}</p>
+      <p><strong>Current status:</strong> ${escapeHTML(report.status)}</p>
+      <p class="muted">Submitted: ${escapeHTML(report.created_at)}</p>
 
-    if(error) {
-        box.textContent = "Could not load reports: " + error.message;
-        return;
-    }
+      <label for="status-${report.id}">Update report status</label>
+      <select id="status-${report.id}">
+        <option value="Report received" ${report.status==="Report received"?"selected":""}>Report received</option>
+        <option value="Under review" ${report.status==="Under review"?"selected":""}>Under review</option>
+        <option value="Referred to institution" ${report.status==="Referred to institution"?"selected":""}>Referred to institution</option>
+        <option value="Institution response recorded" ${report.status==="Institution response recorded"?"selected":""}>Institution response recorded</option>
+        <option value="Closed" ${report.status==="Closed"?"selected":""}>Closed</option>
+      </select>
+      <button class="small-button" onclick="updateStatus('${report.id}')">Save Status</button>
 
-    if(!data.length) {
-        box.textContent = "There are no submitted reports yet.";
-        return;
-    }
+      <hr>
+      <h4>Internal Case Notes</h4>
+      <textarea class="note-area" id="note-${report.id}" placeholder="Write an internal administrative note..."></textarea>
+      <button class="small-button" onclick="saveCaseNote('${report.id}')">Save Internal Note</button>
+      <h4>Notes History</h4>
+      <div id="notes-${report.id}">Loading notes...</div>
+    </div>
+  `).join("");
 
-    const statuses = [
-        "Report received",
-        "Under review",
-        "Referred to institution",
-        "Institution response recorded",
-        "Closed"
-    ];
-
-    box.innerHTML = data.map(function(report) {
-        const options = statuses.map(function(status) {
-            return `<option value="${escapeHTML(status)}"
-                ${report.status === status ? "selected" : ""}>
-                ${escapeHTML(status)}
-            </option>`;
-        }).join("");
-
-        return `
-        <div class="report">
-            <h3>Case: ${escapeHTML(report.case_reference)}</h3>
-            <p><strong>Submitted:</strong> ${escapeHTML(report.created_at)}</p>
-            <p><strong>Name:</strong> ${escapeHTML(report.full_name)}</p>
-            <p><strong>Phone:</strong> ${escapeHTML(report.phone_number)}</p>
-            <p><strong>Payment method:</strong> ${escapeHTML(report.payment_method)}</p>
-            <p><strong>Amount:</strong> ${escapeHTML(report.amount)}</p>
-            <p><strong>Transaction reference:</strong> ${escapeHTML(report.transaction_reference)}</p>
-            <p><strong>Recipient:</strong> ${escapeHTML(report.recipient)}</p>
-            <p><strong>Description:</strong> ${escapeHTML(report.incident_description)}</p>
-            <p><strong>Current status:</strong> ${escapeHTML(report.status)}</p>
-            <label>Update case status</label>
-            <select id="status-${escapeHTML(report.id)}">${options}</select>
-            <div class="actions">
-                <button onclick="updateStatus('${escapeHTML(report.id)}')">
-                    Save Status
-                </button>
-            </div>
-        </div>`;
-    }).join("");
+  await Promise.all(data.map(report => loadCaseNotes(report.id)));
 }
 
 async function updateStatus(reportId) {
-    if(!currentSession || !isAdmin) {
-        message("Administrator access is required.","error");
-        return;
-    }
+  if(!currentSession || !isAdmin) {
+    showMessage("adminMessage","Administrator access is required.","error");
+    return;
+  }
 
-    const selector = document.getElementById("status-" + reportId);
+  const field = document.getElementById("status-" + reportId);
+  const newStatus = field.value;
 
-    if(!selector) return;
+  const {error} = await db
+    .from("scam_reports")
+    .update({
+      status:newStatus,
+      updated_at:new Date().toISOString()
+    })
+    .eq("id",reportId);
 
-    const newStatus = selector.value;
+  if(error) {
+    showMessage("adminMessage","Could not update status: " + error.message,"error");
+    return;
+  }
 
-    const {error} = await db
-        .from("scam_reports")
-        .update({
-            status:newStatus,
-            updated_at:new Date().toISOString()
-        })
-        .eq("id",reportId);
-
-    if(error) {
-        message("Status update failed: " + error.message,"error");
-        return;
-    }
-
-    message("Case status updated successfully.");
-    await loadAdminReports();
+  showMessage("adminMessage","Report status updated successfully.");
+  await loadAdminReports();
 }
 
-db.auth.onAuthStateChange(function(event,session) {
-    currentSession = session;
-    isAdmin = false;
-    updateNavigation();
-    updateReportAccess();
+async function loadCaseNotes(reportId) {
+  const target = document.getElementById("notes-" + reportId);
+  if(!target) return;
 
-    Promise.resolve().then(function() {
-        refreshApp();
-    });
-});
+  const {data,error} = await db
+    .from("scam_case_notes")
+    .select("note,created_at,admin_user_id")
+    .eq("report_id",reportId)
+    .order("created_at",{ascending:false});
 
-refreshApp();
-showView("home");
+  if(error) {
+    target.textContent = "Could not load notes: " + error.message;
+    return;
+  }
+
+  if(!data.length) {
+    target.textContent = "No internal notes yet.";
+    return;
+  }
+
+  target.innerHTML = data.map(note => `
+    <div class="report">
+      <p>${escapeHTML(note.note)}</p>
+      <p class="muted">Added: ${escapeHTML(note.created_at)}</p>
+    </div>
+  `).join("");
+}
+
+async function saveCaseNote(reportId) {
+  if(!currentSession || !isAdmin) {
+    showMessage("adminMessage","Administrator access is required.","error");
+    return;
+  }
+
+  const field = document.getElementById("note-" + reportId);
+  const note = field.value.trim();
+
+  if(!note) {
+    showMessage("adminMessage","Enter a note first.","error");
+    return;
+  }
+
+  const {error} = await db
+    .from("scam_case_notes")
+    .insert([{
+      report_id:reportId,
+      admin_user_id:currentSession.user.id,
+      note:note
+    }]);
+
+  if(error) {
+    showMessage("adminMessage","Could not save note: " + error.message,"error");
+    return;
+  }
+
+  field.value = "";
+  showMessage("adminMessage","Internal case note saved.");
+  await loadCaseNotes(reportId);
+}
+
+initialize();
 </script>
 </body>
 </html>
