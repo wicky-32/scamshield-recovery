@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,240 +10,495 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#f3f6fa;color:#172033}
-header{background:#102b46;color:white;padding:24px 18px;text-align:center}
+header{background:#102b50;color:white;padding:22px 16px;text-align:center}
 header h1{margin:0 0 8px}
-header p{margin:0;color:#d5e4f2}
-nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;background:#183c5b;padding:12px}
-nav button{background:#fff;color:#183c5b;border:0;border-radius:7px;padding:10px 14px;font-weight:bold}
-main{max-width:760px;margin:20px auto;padding:0 14px}
-.card{background:white;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px #00000010}
-h2{margin-top:0;color:#153a59}
-input,select,textarea{width:100%;padding:12px;margin:7px 0 14px;border:1px solid #cbd5e1;border-radius:7px;font-size:16px}
-textarea{min-height:110px}
-.action{background:#1769aa;color:white;border:0;border-radius:7px;padding:12px 16px;font-size:16px;font-weight:bold;width:100%}
-.action:disabled{opacity:.5}
-.notice{background:#e9f3fc;padding:12px;border-radius:8px;font-size:14px}
-.warning{background:#fff4d8;padding:12px;border-radius:8px;font-size:14px}
-.status{padding:12px;background:#eef2f7;border-radius:8px;margin:10px 0}
-.hidden{display:none}
-footer{text-align:center;padding:24px;color:#536173}
-.small{font-size:13px;color:#5a6575}
-.report{border:1px solid #e1e7ee;border-radius:8px;padding:14px;margin:12px 0}
+header p{margin:0;color:#dce8f6}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:14px;background:white;box-shadow:0 2px 8px #0001}
+button{border:0;border-radius:7px;padding:11px 15px;background:#1765b1;color:white;font-weight:bold;cursor:pointer}
+button:hover{opacity:.9}
+button.secondary{background:#52657c}
+button.danger{background:#a83232}
+main{max-width:850px;margin:25px auto;padding:0 14px}
+.panel{background:white;padding:22px;border-radius:12px;margin-bottom:18px;box-shadow:0 3px 12px #0000000d}
+h2{color:#12365e;margin-top:0}
+label{display:block;font-weight:bold;margin:13px 0 6px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:7px;font-size:15px}
+textarea{min-height:100px;resize:vertical}
+form button{margin-top:16px}
+.notice{background:#fff5dc;border-left:4px solid #d69b21;padding:13px;border-radius:5px;margin:15px 0;line-height:1.5}
+.success{color:#087443;font-weight:bold}
+.error{color:#b42318;font-weight:bold}
+.muted{color:#64748b;font-size:14px}
+.report{border:1px solid #dbe3ed;border-radius:9px;padding:15px;margin:14px 0;overflow-wrap:anywhere}
+.report h3{margin-top:0;color:#12365e}
+.hidden{display:none!important}
+footer{text-align:center;padding:25px;color:#64748b;font-size:13px}
+.status{font-weight:bold;color:#1765b1}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 </style>
 </head>
 <body>
 
 <header>
-<h1>🛡️ ScamShield Recovery</h1>
-<p>Document suspected scams. Organize your evidence. Prepare your next steps.</p>
+<h1>ScamShield Recovery</h1>
+<p>Document suspected scams. Organize evidence. Prepare reports.</p>
 </header>
 
 <nav>
-<button onclick="showSection('home')">Home</button>
-<button onclick="showSection('account')">Account</button>
-<button onclick="showSection('report')">Report Scam</button>
-<button onclick="showSection('reports')">My Reports</button>
+<button data-view="home">Home</button>
+<button data-view="account">Account</button>
+<button data-view="report">Report Scam</button>
+<button data-view="myreports">My Reports</button>
+<button id="adminNav" data-view="admin" class="hidden">Admin Dashboard</button>
+<button id="logoutBtn" class="secondary hidden">Log Out</button>
 </nav>
 
 <main>
-<section id="home" class="card">
-<h2>Protect. Document. Report.</h2>
-<p>ScamShield helps you record suspected fraud incidents and keep your case details organized.</p>
+<div id="message" class="panel hidden"></div>
+
+<section id="home" class="panel">
+<h2>Welcome to ScamShield Recovery</h2>
+<p>ScamShield helps people document suspected fraud, organize available evidence and prepare information for reporting to the appropriate institution or authority.</p>
 <div class="notice">
-<strong>Prototype notice:</strong> ScamShield is an early-stage reporting and documentation tool. It is not a bank, law-enforcement agency, or money-recovery service.
+<strong>Important:</strong> ScamShield is an independent prototype. It cannot freeze accounts, reverse M-Pesa or bank transactions, access financial institution systems, or guarantee recovery of money.
 </div>
-<p>We cannot freeze accounts, reverse payments, or guarantee recovery. Contact your bank, mobile-money provider, and relevant authorities directly using their official contact details.</p>
+<h3>How it works</h3>
+<ol>
+<li>Create an account or sign in.</li>
+<li>Submit a suspected scam report using test information.</li>
+<li>View your submitted reports and case references.</li>
+<li>Authorized administrators can review reports and update their recorded status.</li>
+</ol>
+<p class="muted">Use fictional information only while this prototype is being tested.</p>
 </section>
 
-<section id="account" class="card hidden">
-<h2>Your Account</h2>
-<div id="authStatus" class="status">Checking account...</div>
+<section id="account" class="panel hidden">
+<h2>Account</h2>
+<div class="notice">Create an account or sign in to use the reporting features.</div>
 
-<div id="authForms">
-<h3>Create account</h3>
+<h3>Create an account</h3>
 <form id="signupForm">
-<input id="signupEmail" type="email" placeholder="Email address" autocomplete="email" required>
-<input id="signupPassword" type="password" placeholder="Password (at least 6 characters)" autocomplete="new-password" minlength="6" required>
-<button class="action" type="submit">Create account</button>
+<label>Email address</label>
+<input id="signupEmail" type="email" required>
+<label>Password</label>
+<input id="signupPassword" type="password" minlength="6" required>
+<button type="submit">Register</button>
 </form>
 
-<hr>
+<hr style="margin:25px 0;border:0;border-top:1px solid #ddd">
 
-<h3>Log in</h3>
+<h3>Sign in</h3>
 <form id="loginForm">
-<input id="loginEmail" type="email" placeholder="Email address" autocomplete="email" required>
-<input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required>
-<button class="action" type="submit">Log in</button>
+<label>Email address</label>
+<input id="loginEmail" type="email" required>
+<label>Password</label>
+<input id="loginPassword" type="password" required>
+<button type="submit">Sign In</button>
 </form>
-</div>
-
-<button id="logoutBtn" class="action hidden" type="button">Log out</button>
-<p id="authMessage" class="small"></p>
 </section>
 
-<section id="report" class="card hidden">
+<section id="report" class="panel hidden">
 <h2>Submit a Scam Report</h2>
-<p class="warning">Use fake information during testing. Do not enter passwords, PINs, bank logins, identity documents, or sensitive personal details.</p>
-<form id="reportForm">
-<input id="fullName" placeholder="Name (test name)" required>
-<input id="phone" type="tel" placeholder="Phone number (test number)">
-<select id="paymentMethod" required>
+<div id="reportAccess"></div>
+<form id="reportForm" class="hidden">
+<label>Full name (use test information)</label>
+<input id="fullName" required>
+<label>Phone number (use a fictional number)</label>
+<input id="phoneNumber">
+<label>Payment method</label>
+<select id="paymentMethod">
 <option value="">Select payment method</option>
-<option>Mobile money</option>
+<option>M-Pesa</option>
 <option>Bank transfer</option>
-<option>Card payment</option>
-<option>Cryptocurrency</option>
-<option>Online platform</option>
+<option>Card</option>
 <option>Other</option>
 </select>
-<input id="amount" type="number" min="0" step="0.01" placeholder="Amount lost (optional)">
-<input id="transactionRef" placeholder="Transaction reference (optional)">
-<input id="recipient" placeholder="Recipient / suspected scammer (optional)">
-<textarea id="description" placeholder="Describe what happened (use test information)" required></textarea>
-<button class="action" type="submit">Submit Report</button>
+<label>Amount involved (test amount)</label>
+<input id="amount" type="number" min="0" step="0.01">
+<label>Transaction reference (fictional)</label>
+<input id="transactionReference">
+<label>Recipient details (fictional)</label>
+<input id="recipient">
+<label>Describe what happened</label>
+<textarea id="description" required></textarea>
+<button type="submit">Submit Test Report</button>
 </form>
-<p id="reportMessage"></p>
 </section>
 
-<section id="reports" class="card hidden">
-<h2>My Reports & Case Tracking</h2>
-<p>Sign in to view your own reports and their recorded status.</p>
-<button id="refreshReports" class="action" type="button">Refresh My Reports</button>
-<div id="reportsList"></div>
+<section id="myreports" class="panel hidden">
+<h2>My Reports</h2>
+<div id="myReportsContent">Sign in to view your reports.</div>
 </section>
 
-<section class="card">
-<h3>Important safety advice</h3>
-<p>If you believe you've been scammed, contact your financial provider immediately. Do not pay anyone who promises guaranteed recovery, asks for advance fees, or requests your passwords, PINs, or verification codes.</p>
-<p class="small">Your report is a record only. The status shown here is not an official response from a bank or authority.</p>
+<section id="admin" class="panel hidden">
+<h2>Administrator Dashboard</h2>
+<div id="adminContent">Checking administrator access...</div>
 </section>
 </main>
 
-<footer>ScamShield Recovery · Prototype website</footer>
+<footer>
+ScamShield Recovery · Independent prototype · Not a financial institution
+</footer>
 
 <script>
 const SUPABASE_URL = "https://fycnczagzbhxdwgufngp.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_CNDsx8VZY_xNq8Wz6JCQlA_7Y9oU8h8";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const SUPABASE_KEY = "sb_publishable_CNDsx8VZY_xNq8Wz6JCQlA_7Y9oU8h8";
 
-function showSection(id){
-  ["home","account","report","reports"].forEach(s=>{
-    document.getElementById(s).classList.toggle("hidden",s!==id);
-  });
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentSession = null;
+let isAdmin = false;
+
+const views = ["home","account","report","myreports","admin"];
+
+function message(text, type="success") {
+    const box = document.getElementById("message");
+    box.textContent = text;
+    box.className = "panel " + type;
+    box.classList.remove("hidden");
+    window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function message(id,text){
-  document.getElementById(id).textContent=text;
+function clearMessage() {
+    document.getElementById("message").classList.add("hidden");
 }
 
-function escapeHtml(value){
-  return String(value ?? "").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[c]));
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, function(char) {
+        return {
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#039;"
+        }[char];
+    });
 }
 
-async function updateAuthUI(){
-  const {data:{session}}=await db.auth.getSession();
-  const loggedIn=!!session;
-  document.getElementById("authStatus").textContent=loggedIn
-    ? "Signed in as "+session.user.email
-    : "You are not signed in.";
-  document.getElementById("authForms").classList.toggle("hidden",loggedIn);
-  document.getElementById("logoutBtn").classList.toggle("hidden",!loggedIn);
-  return session;
+function showView(name) {
+    clearMessage();
+
+    views.forEach(function(view) {
+        document.getElementById(view).classList.toggle("hidden",view !== name);
+    });
+
+    if(name === "myreports") loadMyReports();
+    if(name === "admin") loadAdminReports();
+    if(name === "report") updateReportAccess();
 }
 
-document.getElementById("signupForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  message("authMessage","Creating account...");
-  const email=document.getElementById("signupEmail").value.trim();
-  const password=document.getElementById("signupPassword").value;
-  const {data,error}=await db.auth.signUp({
-    email,password,
-    options:{emailRedirectTo:"https://wicky-32.github.io/scamshield-recovery/"}
-  });
-  if(error){message("authMessage",error.message);return;}
-  message("authMessage",data.session
-    ? "Account created and signed in."
-    : "Account created. Check your email for the confirmation link, then log in.");
-  await updateAuthUI();
+document.querySelectorAll("[data-view]").forEach(function(button) {
+    button.addEventListener("click",function() {
+        showView(button.dataset.view);
+    });
 });
 
-document.getElementById("loginForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  message("authMessage","Logging in...");
-  const email=document.getElementById("loginEmail").value.trim();
-  const password=document.getElementById("loginPassword").value;
-  const {error}=await db.auth.signInWithPassword({email,password});
-  if(error){message("authMessage",error.message);return;}
-  message("authMessage","Login successful.");
-  await updateAuthUI();
-  await loadReports();
-});
-
-document.getElementById("logoutBtn").addEventListener("click",async()=>{
-  const {error}=await db.auth.signOut();
-  message("authMessage",error?error.message:"You have logged out.");
-  await updateAuthUI();
-  document.getElementById("reportsList").textContent="";
-});
-
-document.getElementById("reportForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const {data:{session}}=await db.auth.getSession();
-  if(!session){
-    message("reportMessage","Please create an account or log in first.");
-    showSection("account");
-    return;
-  }
-  message("reportMessage","Submitting report...");
-  const caseRef="SSR-"+Date.now()+"-"+Math.floor(Math.random()*900+100);
-  const amountValue=document.getElementById("amount").value;
-  const report={
-    case_reference:caseRef,
-    user_id:session.user.id,
-    full_name:document.getElementById("fullName").value.trim(),
-    phone_number:document.getElementById("phone").value.trim()||null,
-    payment_method:document.getElementById("paymentMethod").value,
-    amount:amountValue?Number(amountValue):null,
-    transaction_reference:document.getElementById("transactionRef").value.trim()||null,
-    recipient:document.getElementById("recipient").value.trim()||null,
-    incident_description:document.getElementById("description").value.trim()
-  };
-  const {error}=await db.from("scam_reports").insert(report);
-  if(error){
-    message("reportMessage","Submission failed: "+error.message);
-    return;
-  }
-  message("reportMessage","Report saved. Your case reference is: "+caseRef);
-  e.target.reset();
-  await loadReports();
-});
-
-async function loadReports(){
-  const list=document.getElementById("reportsList");
-  const {data:{session}}=await db.auth.getSession();
-  if(!session){list.textContent="Please log in to see your reports.";return;}
-  list.textContent="Loading reports...";
-  const {data,error}=await db.from("scam_reports")
-    .select("case_reference,created_at,status,payment_method,amount,incident_description")
-    .order("created_at",{ascending:false});
-  if(error){list.textContent="Could not load reports: "+error.message;return;}
-  if(!data||data.length===0){list.textContent="You have no reports yet.";return;}
-  list.innerHTML=data.map(r=>`
-    <div class="report">
-      <strong>Case:</strong> ${escapeHtml(r.case_reference)}<br>
-      <strong>Status:</strong> ${escapeHtml(r.status)}<br>
-      <strong>Submitted:</strong> ${escapeHtml(new Date(r.created_at).toLocaleString())}<br>
-      <strong>Payment method:</strong> ${escapeHtml(r.payment_method||"Not specified")}<br>
-      <strong>Amount:</strong> ${escapeHtml(r.amount??"Not specified")}<br>
-      <strong>Description:</strong> ${escapeHtml(r.incident_description||"")}
-    </div>`).join("");
+function updateNavigation() {
+    document.getElementById("logoutBtn").classList.toggle("hidden",!currentSession);
+    document.getElementById("adminNav").classList.toggle("hidden",!isAdmin);
 }
 
-document.getElementById("refreshReports").addEventListener("click",loadReports);
-db.auth.onAuthStateChange(()=>{updateAuthUI();});
-updateAuthUI();
+async function refreshApp() {
+    const {data,error} = await db.auth.getSession();
+
+    if(error) {
+        message(error.message,"error");
+        return;
+    }
+
+    currentSession = data.session;
+    isAdmin = false;
+
+    if(currentSession) {
+        const {data:adminRecord,error:adminError} = await db
+            .from("scamshield_admins")
+            .select("user_id")
+            .eq("user_id",currentSession.user.id)
+            .maybeSingle();
+
+        if(adminError) {
+            console.error(adminError);
+        } else {
+            isAdmin = !!adminRecord;
+        }
+    }
+
+    updateNavigation();
+    updateReportAccess();
+}
+
+function updateReportAccess() {
+    const access = document.getElementById("reportAccess");
+    const form = document.getElementById("reportForm");
+
+    if(currentSession) {
+        access.textContent = "Signed in as " + currentSession.user.email;
+        form.classList.remove("hidden");
+    } else {
+        access.textContent = "Please sign in before submitting a report.";
+        form.classList.add("hidden");
+    }
+}
+
+document.getElementById("signupForm").addEventListener("submit",async function(event) {
+    event.preventDefault();
+    clearMessage();
+
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value;
+
+    const {data,error} = await db.auth.signUp({
+        email:email,
+        password:password,
+        options:{
+            emailRedirectTo:window.location.origin + window.location.pathname
+        }
+    });
+
+    if(error) {
+        message(error.message,"error");
+        return;
+    }
+
+    if(data.session) {
+        await refreshApp();
+        message("Registration successful. You are signed in.");
+    } else {
+        message("Registration received. Check your email for the confirmation link before signing in.");
+    }
+});
+
+document.getElementById("loginForm").addEventListener("submit",async function(event) {
+    event.preventDefault();
+    clearMessage();
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    const {error} = await db.auth.signInWithPassword({
+        email:email,
+        password:password
+    });
+
+    if(error) {
+        message(error.message,"error");
+        return;
+    }
+
+    await refreshApp();
+    message("You are signed in successfully.");
+    showView("home");
+});
+
+document.getElementById("logoutBtn").addEventListener("click",async function() {
+    const {error} = await db.auth.signOut();
+
+    if(error) {
+        message(error.message,"error");
+        return;
+    }
+
+    currentSession = null;
+    isAdmin = false;
+    updateNavigation();
+    showView("home");
+    message("You have signed out.");
+});
+
+document.getElementById("reportForm").addEventListener("submit",async function(event) {
+    event.preventDefault();
+    clearMessage();
+
+    if(!currentSession) {
+        message("Please sign in first.","error");
+        return;
+    }
+
+    const caseReference = "SSR-" + Date.now() + "-" +
+        Math.random().toString(36).slice(2,7).toUpperCase();
+
+    const report = {
+        case_reference:caseReference,
+        user_id:currentSession.user.id,
+        full_name:document.getElementById("fullName").value.trim(),
+        phone_number:document.getElementById("phoneNumber").value.trim(),
+        payment_method:document.getElementById("paymentMethod").value,
+        amount:document.getElementById("amount").value || null,
+        transaction_reference:document.getElementById("transactionReference").value.trim(),
+        recipient:document.getElementById("recipient").value.trim(),
+        incident_description:document.getElementById("description").value.trim(),
+        status:"Report received"
+    };
+
+    const {error} = await db.from("scam_reports").insert([report]);
+
+    if(error) {
+        message("Report could not be submitted: " + error.message,"error");
+        return;
+    }
+
+    document.getElementById("reportForm").reset();
+    message("Test report submitted successfully. Your case reference is " + caseReference);
+});
+
+async function loadMyReports() {
+    const box = document.getElementById("myReportsContent");
+
+    if(!currentSession) {
+        box.textContent = "Please sign in to view your reports.";
+        return;
+    }
+
+    box.textContent = "Loading your reports...";
+
+    const {data,error} = await db
+        .from("scam_reports")
+        .select("*")
+        .eq("user_id",currentSession.user.id)
+        .order("created_at",{ascending:false});
+
+    if(error) {
+        box.textContent = "Could not load reports: " + error.message;
+        return;
+    }
+
+    if(!data.length) {
+        box.textContent = "You have not submitted any reports yet.";
+        return;
+    }
+
+    box.innerHTML = data.map(function(report) {
+        return `
+        <div class="report">
+            <h3>${escapeHTML(report.case_reference)}</h3>
+            <p><strong>Date:</strong> ${escapeHTML(report.created_at)}</p>
+            <p><strong>Status:</strong> <span class="status">${escapeHTML(report.status)}</span></p>
+            <p><strong>Description:</strong> ${escapeHTML(report.incident_description)}</p>
+        </div>`;
+    }).join("");
+}
+
+async function loadAdminReports() {
+    const box = document.getElementById("adminContent");
+
+    if(!currentSession) {
+        box.textContent = "Please sign in with your administrator account.";
+        return;
+    }
+
+    box.textContent = "Checking administrator access...";
+
+    const {data:adminRecord,error:adminError} = await db
+        .from("scamshield_admins")
+        .select("user_id")
+        .eq("user_id",currentSession.user.id)
+        .maybeSingle();
+
+    if(adminError || !adminRecord) {
+        box.textContent = "Access denied. This account is not registered as an administrator.";
+        return;
+    }
+
+    isAdmin = true;
+    updateNavigation();
+    box.textContent = "Loading submitted reports...";
+
+    const {data,error} = await db
+        .from("scam_reports")
+        .select("*")
+        .order("created_at",{ascending:false});
+
+    if(error) {
+        box.textContent = "Could not load reports: " + error.message;
+        return;
+    }
+
+    if(!data.length) {
+        box.textContent = "There are no submitted reports yet.";
+        return;
+    }
+
+    const statuses = [
+        "Report received",
+        "Under review",
+        "Referred to institution",
+        "Institution response recorded",
+        "Closed"
+    ];
+
+    box.innerHTML = data.map(function(report) {
+        const options = statuses.map(function(status) {
+            return `<option value="${escapeHTML(status)}"
+                ${report.status === status ? "selected" : ""}>
+                ${escapeHTML(status)}
+            </option>`;
+        }).join("");
+
+        return `
+        <div class="report">
+            <h3>Case: ${escapeHTML(report.case_reference)}</h3>
+            <p><strong>Submitted:</strong> ${escapeHTML(report.created_at)}</p>
+            <p><strong>Name:</strong> ${escapeHTML(report.full_name)}</p>
+            <p><strong>Phone:</strong> ${escapeHTML(report.phone_number)}</p>
+            <p><strong>Payment method:</strong> ${escapeHTML(report.payment_method)}</p>
+            <p><strong>Amount:</strong> ${escapeHTML(report.amount)}</p>
+            <p><strong>Transaction reference:</strong> ${escapeHTML(report.transaction_reference)}</p>
+            <p><strong>Recipient:</strong> ${escapeHTML(report.recipient)}</p>
+            <p><strong>Description:</strong> ${escapeHTML(report.incident_description)}</p>
+            <p><strong>Current status:</strong> ${escapeHTML(report.status)}</p>
+            <label>Update case status</label>
+            <select id="status-${escapeHTML(report.id)}">${options}</select>
+            <div class="actions">
+                <button onclick="updateStatus('${escapeHTML(report.id)}')">
+                    Save Status
+                </button>
+            </div>
+        </div>`;
+    }).join("");
+}
+
+async function updateStatus(reportId) {
+    if(!currentSession || !isAdmin) {
+        message("Administrator access is required.","error");
+        return;
+    }
+
+    const selector = document.getElementById("status-" + reportId);
+
+    if(!selector) return;
+
+    const newStatus = selector.value;
+
+    const {error} = await db
+        .from("scam_reports")
+        .update({
+            status:newStatus,
+            updated_at:new Date().toISOString()
+        })
+        .eq("id",reportId);
+
+    if(error) {
+        message("Status update failed: " + error.message,"error");
+        return;
+    }
+
+    message("Case status updated successfully.");
+    await loadAdminReports();
+}
+
+db.auth.onAuthStateChange(function(event,session) {
+    currentSession = session;
+    isAdmin = false;
+    updateNavigation();
+    updateReportAccess();
+
+    Promise.resolve().then(function() {
+        refreshApp();
+    });
+});
+
+refreshApp();
+showView("home");
 </script>
 </body>
 </html>
