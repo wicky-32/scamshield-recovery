@@ -311,9 +311,7 @@ document.getElementById("reportForm").addEventListener("submit",async function(e
 
   const report = {
     case_reference:"SSR-" + Date.now() + "-" + Math.floor(Math.random()*10000),
-    admin_user_id:currentSession.user.id,
-admin_email:currentSession.user.email,
-file_name:file.name,:document.getElementById("fullName").value.trim(),
+    full_name:document.getElementById("fullName").value.trim(),
     phone_number:document.getElementById("phoneNumber").value.trim() || null,
     payment_method:document.getElementById("paymentMethod").value || null,
     amount:amountValue ? Number(amountValue) : null,
